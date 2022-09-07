@@ -8,6 +8,7 @@ class Dashboard{
     public $data_fim;
     public $numeroVendas;
     public $totalVdendas;
+    public $cliente_ativo;
 
 
     public function __get($atributo){
@@ -103,19 +104,31 @@ class Bd{
 }
 
 $dashboard = new Dashboard();
-$dashboard->__set('data_inicio', '2018-08-01');
-$dashboard->__set('data_fim', '2018-10-31');
-
 $conexao = new Conexao();
-
-
 $bd = new Bd($conexao, $dashboard);
 
-$dashboard-> __set('numeroVendas', $bd->getNumeroVendas());
+$competencia = explode('-', $_GET['competencia']);
+$ano = $competencia[0];
+$mes = $competencia[1];
 
+$dia_do_mes = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+
+$dashboard->__set('data_inicio', $ano.'-'.$mes.'-01');
+$dashboard->__set('data_fim', $ano.'-'.$mes.'-'.$dia_do_mes);
+
+$dashboard-> __set('numeroVendas', $bd->getNumeroVendas());
 $dashboard-> __set('totalVendas', $bd->getTotalVendas());
+
+// utilizamos o json para criar um objeto literal, que pode ser acessado diretamente os seus atributos.
+echo json_encode($dashboard);
+
 //print_r($bd->getTotalVendas());
 
-print_r($dashboard);
+//print_r($_GET);
+//print_r($competencia);
+//print_r($mes);
+//print_r($ano);
+//print_r($ano.'/'.$mes.'/'.$dia_do_mes);
+
 
 ?>
